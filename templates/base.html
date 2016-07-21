@@ -1,0 +1,35 @@
+{% load bootstrap3 %}
+{% load compress %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% block head_title %}{% endblock head_title %} | BTS</title>
+
+  {% bootstrap_css %}
+
+  {% compress css %}
+  {% block styles %}{% endblock styles %}
+  {% endcompress %}
+
+</head>
+
+<body>
+
+  {% include 'nav.html' %}
+
+  {% bootstrap_messages %}
+
+  {% block main %}{% endblock main %}
+
+  {% include 'footer.html' %}
+
+  {% bootstrap_javascript jquery=1 %}
+  {% block scripts %}{% endblock scripts %}
+</body>
+
+</html>

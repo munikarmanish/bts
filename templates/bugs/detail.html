@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block head_title %}#{{ bug.id }}{% endblock head_title %}
+
+{% block main %}
+<div class="container">
+
+  <h1>
+    <small>[#{{ bug.id }}]</small>
+    {% if bug.is_solved %}[SOLVED]{% endif %}
+    {{ bug.title }}
+  </h1>
+
+  {% if bug.master %}
+  <p>Marked as duplicate of <a href="{{ bug.master.get_absolute_url }}">#{{ bug.master.id }}</a>.
+  {% endif %}
+
+  <hr>
+
+  <ul>
+    <li><strong>Submitter:</strong> <a href="#">{{ bug.submitter }}</a></li>
+    <li><strong>Submitted on:</strong> {{ bug.created|date }}</li>
+    <li><strong>Category:</strong> <a href="#">{{ bug.category }}</a></li>
+    <li><strong>Severity:</strong> {{ bug.get_severity_display }}</li>
+    <li><strong>Status:</strong> {{ bug.get_status_display }}</li>
+  </ul>
+
+  <hr>
+
+  <h3>System info:</h3>
+  <ul>
+    <li><strong>Operating system:</strong> {{ bug.os }}</li>
+    <li><strong>RAM:</strong> {{ bug.ram }}</li>
+    <li><strong>GPU version:</strong> {{ bug.gpu }}</li>
+    <li><strong>CUDA cores:</strong> {{ bug.cuda_cores }}</li>
+    <li><strong>Video RAM:</strong> {{ bug.vram }}</li>
+  </ul>
+
+  <hr>
+
+  <h3>Bug details:</h3>
+  <ul>
+    <li><strong>Project title:</strong> {{ bug.project }}</li>
+    <li><strong>Particle number:</strong> {{ bug.particle }}</li>
+    <li><strong>Triangle number:</strong> {{ bug.triangle }}</li>
+  </ul>
+
+  <p>
+    <strong>Description:</strong><br>
+    {{ bug.description|linebreaks }}
+  </p>
+
+  <p>
+    <strong>Steps to reproduce:</strong><br>
+    {{ bug.reproduce|linebreaks }}
+  </p>
+
+  <p>
+    <strong>Expected behavior:</strong><br>
+    {{ bug.expected|linebreaks }}
+  </p>
+
+  <p>
+    <strong>Actual behavior:</strong><br>
+    {{ bug.actual|linebreaks }}
+  </p>
+
+
+</div>{# container #}
+{% endblock main %}

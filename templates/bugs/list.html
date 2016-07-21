@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block head_title %}Bug reports{% endblock head_title %}
+
+{% block main %}
+<div class="container">
+
+  <h1>Bug reports</h1>
+
+  <hr>
+
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>Bug ID</th>
+      <th>Title</th>
+      <th>Project</th>
+      <th>Category</th>
+      <th>Severity</th>
+      <th>Added on</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for bug in bugs %}
+      <tr>
+        <td>{{ bug.id }}</td>
+        <td><a href="{{ bug.get_absolute_url }}">{{ bug.title }}</a></td>
+        <td>{{ bug.project }}</td>
+        <td>{{ bug.category }}</td>
+        <td>{{ bug.get_severity_display }}</td>
+        <td>{{ bug.created|date }}</td>
+        <td>{{ bug.get_status_display }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {# Pagination #}
+  {% if is_paginated %}
+  <div class="row">
+  <div class="col-sm-12">
+    <p class="text-center">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+      {% endif %}
+      <span class="page-current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+      {% endif %}
+    </p>
+  </div>{# col #}
+  </div>{# row #}
+  {% endif %}
+
+</div>{# container #}
+{% endblock main %}

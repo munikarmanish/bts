@@ -1,0 +1,15 @@
+# Python cache
+*.pyc
+*__pycache__*
+
+# Backup files
+*~
+*.swp
+*#
+
+# Static / media
+static_cdn
+media_cdn
+
+# Environment file
+.env
