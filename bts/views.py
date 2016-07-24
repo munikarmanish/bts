@@ -1,4 +1,3 @@
-from bugs.views import BugList
 from django.shortcuts import redirect
 from django.views.generic import View
 

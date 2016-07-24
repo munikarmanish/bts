@@ -12,6 +12,7 @@ class BugCategory(models.Model):
     class Meta:
         verbose_name = 'Bug category'
         verbose_name_plural = 'Bug categories'
+        ordering = ['name', ]
 
     @python_2_unicode_compatible
     def __str__(self):
@@ -86,7 +87,21 @@ class BugReport(models.Model):
     @python_2_unicode_compatible
     def __str__(self):
         title = "[#{id}] {title}"
-        return title.format(id=self.id, title=Truncator(self.title).chars(20))
+        return title.format(id=self.id, title=Truncator(self.title).chars(30))
 
     def get_absolute_url(self):
         return reverse('bugs_detail', kwargs={'id': self.id})
+
+    def similarity(bug):
+        return token_similarity(tokenize(self.title), tokenize(bug.title))
+
+    def get_similar_reports(self, n=10):
+        from .utils import bug_similarity
+
+        masters = BugReport.objects.filter(master=None, category=self.category, project=self.project)
+        candidates = []
+        for bug in masters:
+            candidates.append((bug_similarity(self, bug), bug.id))
+        candidate_ids = [two for (one, two) in sorted(candidates, reverse=True)[1:n]]
+        bugs = [(BugReport.objects.get(id=id)) for id in candidate_ids]
+        return bugs

@@ -155,6 +155,8 @@ STATICFILES_FINDERS = [
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
     ('text/scss', 'django_libsass.SassCompiler'),
+    ('text/x-sass', 'django_libsass.SassCompiler'),
+    ('text/sass', 'django_libsass.SassCompiler'),
 )
 
 # FIXTURES

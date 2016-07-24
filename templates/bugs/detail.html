@@ -11,60 +11,77 @@
     {{ bug.title }}
   </h1>
 
-  {% if bug.master %}
-  <p>Marked as duplicate of <a href="{{ bug.master.get_absolute_url }}">#{{ bug.master.id }}</a>.
-  {% endif %}
+  <div class="row">
 
-  <hr>
+    {# Column for current bug report #}
+    <div class="col-md-7">
+      {% if bug.master %}
+      <p>Marked as duplicate of <a href="{{ bug.master.get_absolute_url }}">#{{ bug.master.id }}</a>.
+      {% endif %}
 
-  <ul>
-    <li><strong>Submitter:</strong> <a href="#">{{ bug.submitter }}</a></li>
-    <li><strong>Submitted on:</strong> {{ bug.created|date }}</li>
-    <li><strong>Category:</strong> <a href="#">{{ bug.category }}</a></li>
-    <li><strong>Severity:</strong> {{ bug.get_severity_display }}</li>
-    <li><strong>Status:</strong> {{ bug.get_status_display }}</li>
-  </ul>
+      <hr>
 
-  <hr>
+      <ul>
+        <li><strong>Submitter:</strong> <a href="#">{{ bug.submitter }}</a></li>
+        <li><strong>Submitted on:</strong> {{ bug.created|date }}</li>
+        <li><strong>Category:</strong> <a href="#">{{ bug.category }}</a></li>
+        <li><strong>Severity:</strong> {{ bug.get_severity_display }}</li>
+        <li><strong>Status:</strong> {{ bug.get_status_display }}</li>
+      </ul>
 
-  <h3>System info:</h3>
-  <ul>
-    <li><strong>Operating system:</strong> {{ bug.os }}</li>
-    <li><strong>RAM:</strong> {{ bug.ram }}</li>
-    <li><strong>GPU version:</strong> {{ bug.gpu }}</li>
-    <li><strong>CUDA cores:</strong> {{ bug.cuda_cores }}</li>
-    <li><strong>Video RAM:</strong> {{ bug.vram }}</li>
-  </ul>
+      <hr>
 
-  <hr>
+      <h3>System info:</h3>
+      <ul>
+        <li><strong>Operating system:</strong> {{ bug.os }}</li>
+        <li><strong>RAM:</strong> {{ bug.ram }}</li>
+        <li><strong>GPU version:</strong> {{ bug.gpu }}</li>
+        <li><strong>CUDA cores:</strong> {{ bug.cuda_cores }}</li>
+        <li><strong>Video RAM:</strong> {{ bug.vram }}</li>
+      </ul>
 
-  <h3>Bug details:</h3>
-  <ul>
-    <li><strong>Project title:</strong> {{ bug.project }}</li>
-    <li><strong>Particle number:</strong> {{ bug.particle }}</li>
-    <li><strong>Triangle number:</strong> {{ bug.triangle }}</li>
-  </ul>
+      <hr>
 
-  <p>
-    <strong>Description:</strong><br>
-    {{ bug.description|linebreaks }}
-  </p>
+      <h3>Bug details:</h3>
+      <ul>
+        <li><strong>Project title:</strong> {{ bug.project }}</li>
+        <li><strong>Particle number:</strong> {{ bug.particle }}</li>
+        <li><strong>Triangle number:</strong> {{ bug.triangle }}</li>
+      </ul>
 
-  <p>
-    <strong>Steps to reproduce:</strong><br>
-    {{ bug.reproduce|linebreaks }}
-  </p>
+      <p>
+        <strong>Description:</strong><br>
+        {{ bug.description|linebreaks }}
+      </p>
 
-  <p>
-    <strong>Expected behavior:</strong><br>
-    {{ bug.expected|linebreaks }}
-  </p>
+      <p>
+        <strong>Steps to reproduce:</strong><br>
+        {{ bug.reproduce|linebreaks }}
+      </p>
 
-  <p>
-    <strong>Actual behavior:</strong><br>
-    {{ bug.actual|linebreaks }}
-  </p>
+      <p>
+        <strong>Expected behavior:</strong><br>
+        {{ bug.expected|linebreaks }}
+      </p>
 
+      <p>
+        <strong>Actual behavior:</strong><br>
+        {{ bug.actual|linebreaks }}
+      </p>
+    </div>{# col #}
+
+    {# Sidebar #}
+    <div class="col-md-5">
+      <h3>Similar bug reports</h3>
+
+      <ul>
+      {% for b in bug.get_similar_reports %}
+        <li><a href="{{ b.get_absolute_url }}">{{ b.title }}</a></li>
+      {% endfor %}
+      </ul>
+    </div>{# col #}
+
+  </div>{# row #}
 
 </div>{# container #}
 {% endblock main %}
