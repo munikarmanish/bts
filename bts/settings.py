@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'accounts',
     'bootstrap3',
     'compressor',
+    'info',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -138,7 +139,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 STATIC_ROOT = root('static_cdn')
-MEDIA_ROOT = root('media_root')
+MEDIA_ROOT = root('media_cdn')
 
 STATICFILES_DIRS = [root('static'), ]
 

@@ -1,10 +1,12 @@
 import string
 
 import numpy as n
-import sklearn as sk
+from django.db.models import Count
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+
+from info.models import Frequency
 
 from .models import BugCategory, BugReport
 
@@ -12,25 +14,16 @@ from .models import BugCategory, BugReport
 def tokenize(text):
     lowers = text.lower()
     punct_free = lowers.translate(str.maketrans({key: None for key in string.punctuation}))
-    tokens = word_tokenize(lowers)
+    tokens = word_tokenize(punct_free)
     porter = PorterStemmer()
     stemmed = [porter.stem(w) for w in tokens]
-    tokens = [w for w in tokens if w not in stopwords.words('english')]
-    return stemmed
-
-
-def dterm(term):
-    bugs = BugReport.objects.filter(title__icontains=term)
-    n = 0
-    for bug in bugs:
-        if term in tokenize(bug.title):
-            n += 1
-    return n
+    tokens = [w for w in stemmed if w not in stopwords.words('english')]
+    return tokens
 
 
 def idf(term):
-    Da = len(BugReport.objects.all())
-    Dt = dterm(term)
+    Da = BugReport.objects.count()
+    Dt = Frequency.objects.filter(term=term).count()
     return n.log2(Da / (1 + Dt))
 
 

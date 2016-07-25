@@ -102,6 +102,6 @@ class BugReport(models.Model):
         candidates = []
         for bug in masters:
             candidates.append((bug_similarity(self, bug), bug.id))
-        candidate_ids = [two for (one, two) in sorted(candidates, reverse=True)[1:n]]
+        candidate_ids = [two for (one, two) in sorted(candidates, reverse=True)[1:min(n, len(candidates))]]
         bugs = [(BugReport.objects.get(id=id)) for id in candidate_ids]
         return bugs
