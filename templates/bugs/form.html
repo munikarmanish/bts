@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block head_title %}{{ page_title }}{% endblock head_title %}
+
+{% block main %}
+<main>
+
+<section class="vpad">
+<div class="container">
+
+  <h1>{{ page_title }}</h1>
+
+  <hr>
+
+  <form action="" method="post">{% csrf_token %}
+
+    {% bootstrap_form form %}
+
+    <button type="submit" class="btn btn-lg btn-primary">Submit</button>
+
+  </form>
+
+</div>{# container #}
+</section>
+
+</main>
+{% endblock main %}

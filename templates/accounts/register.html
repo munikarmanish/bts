@@ -10,7 +10,7 @@
 <div class="container">
 <div class="row">
 
-  <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+  <div class="col-sm-6 col-sm-offset-3">
   <div class="panel panel-default">
 
     <div class="panel-heading">
@@ -23,18 +23,18 @@
     <div class="panel-body">
     <form action="" method="post">{% csrf_token %}
 
-      {% comment %}
-      {% bootstrap_field form.first_name %}
-      {% bootstrap_field form.last_name %}
-      {% bootstrap_field form.email %}
-      {% bootstrap_field form.username %}
-      {% bootstrap_field form.password1 %}
-      {% bootstrap_field form.password2 %}
-      {% endcomment %}
+      {% bootstrap_field form.first_name layout='horizontal' form_group_class='form-group row' %}
+      {% bootstrap_field form.last_name layout='horizontal' form_group_class='form-group row'  %}
+      {% bootstrap_field form.email layout='horizontal' form_group_class='form-group row'  %}
+      {% bootstrap_field form.username layout='horizontal' form_group_class='form-group row'  %}
+      {% bootstrap_field form.password1 layout='horizontal' form_group_class='form-group row'  %}
+      {% bootstrap_field form.password2 layout='horizontal' form_group_class='form-group row'  %}
 
-      {% bootstrap_form form %}
-
-      <button type="submit" class="btn btn-primary btn-block">Register</button>
+      <div class="row">
+      <div class="col-sm-9 col-sm-offset-3">
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+      </div>{# col #}
+      </div>{# row #}
     </form>
     </div>{# panel-body #}
 
