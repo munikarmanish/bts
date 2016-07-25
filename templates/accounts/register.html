@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 
-{% block head_title %}Login{% endblock head_title %}
+{% block head_title %}Register{% endblock head_title %}
 
 {% block main %}
 <main>
@@ -14,7 +14,7 @@
   <div class="panel panel-default">
 
     <div class="panel-heading">
-      <h4 class="panel-title">Login</h4>
+      <h4 class="panel-title">Register</h4>
     </div>{# panel-heading #}
 
     {# non-field errors #}
@@ -23,16 +23,23 @@
     <div class="panel-body">
     <form action="" method="post">{% csrf_token %}
 
+      {% comment %}
+      {% bootstrap_field form.first_name %}
+      {% bootstrap_field form.last_name %}
+      {% bootstrap_field form.email %}
       {% bootstrap_field form.username %}
-      {% bootstrap_field form.password %}
+      {% bootstrap_field form.password1 %}
+      {% bootstrap_field form.password2 %}
+      {% endcomment %}
 
-      <button type="submit" class="btn btn-primary btn-block">Login</button>
+      {% bootstrap_form form %}
+
+      <button type="submit" class="btn btn-primary btn-block">Register</button>
     </form>
     </div>{# panel-body #}
 
     <div class="panel-footer">
-      <p><a href="#">Forgot password?</a></p>
-      <p>Not registered yet? <a href="{% url 'register' %}">Register now!</a></p>
+      <p>Already registered? <a href="{% url 'login' %}">Login now</a></p>
     </div>{# panel-footer #}
 
   </div>{# panel #}
