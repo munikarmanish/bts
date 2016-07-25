@@ -160,8 +160,18 @@ COMPRESS_PRECOMPILERS = (
     ('text/sass', 'django_libsass.SassCompiler'),
 )
 
-# FIXTURES
+# Fixtures
 
 FIXTURE_DIRS = [
     root('fixtures'),
 ]
+
+# Authentication
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+
+# Email
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

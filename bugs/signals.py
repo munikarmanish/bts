@@ -9,9 +9,7 @@ from .utils import tokenize
 
 @receiver(post_save, sender=BugReport)
 def bug_report_post_save(sender, instance, created, **kwargs):
-    if created:
-        terms = tokenize(instance.title)
-        for t in set(terms):
-            values = {'freq': terms.count(t)}
-            Frequency.objects.update_or_create(bug=instance, term=t, defaults=values)
-            print("+++++++++++++ WORKED ================")
+    terms = tokenize(instance.title)
+    for t in set(terms):
+        values = {'freq': terms.count(t)}
+        Frequency.objects.update_or_create(bug=instance, term=t, defaults=values)

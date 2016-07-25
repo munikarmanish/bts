@@ -6,6 +6,8 @@
 *~
 *.swp
 *#
+*.pickle
+*.db.json
 
 # Static / media
 static_cdn

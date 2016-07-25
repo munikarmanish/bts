@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block head_title %}Login{% endblock head_title %}
+
+{% block main %}
+<main>
+
+<section class="vpad">
+<div class="container">
+<div class="row">
+
+  <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3">
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <h4 class="panel-title">Login</h4>
+    </div>{# panel-heading #}
+
+    {# non-field errors #}
+    {% bootstrap_form_errors form type='non_fields' %}
+
+    <div class="panel-body">
+    <form action="" method="post">{% csrf_token %}
+
+      {% bootstrap_field form.username %}
+      {% bootstrap_field form.password %}
+
+      <button type="submit" class="btn btn-primary btn-block">Login</button>
+    </form>
+    </div>{# panel-body #}
+
+    <div class="panel-footer">
+      <p><a href="#">Forgot password?</a></p>
+    </div>{# panel-footer #}
+
+  </div>{# panel #}
+  </div>{# col #}
+
+</div>{# row #}
+</div>{# container #}
+</section>
+
+</main>
+{% endblock main %}

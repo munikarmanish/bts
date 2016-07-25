@@ -1,5 +1,6 @@
 {% load bootstrap3 %}
 {% load compress %}
+{% load staticfiles %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,6 +14,7 @@
   {% bootstrap_css %}
 
   {% compress css %}
+  <link rel="stylesheet" type="text/sass" href="{% static 'sass/default.sass' %}">
   {% block styles %}{% endblock styles %}
   {% endcompress %}
 
