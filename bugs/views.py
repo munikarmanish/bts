@@ -12,7 +12,7 @@ class BugList(ListView):
     context_object_name = 'bugs'
     model = BugReport
     page_kwarg = 'page'
-    paginate_by = 30
+    # paginate_by = 30
     ordering = '-id'
     template_name = 'bugs/list.html'
 

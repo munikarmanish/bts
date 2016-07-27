@@ -13,9 +13,11 @@
 
   {% bootstrap_css %}
 
+  {% block styles %}{% endblock styles %}
+
   {% compress css %}
   <link rel="stylesheet" type="text/sass" href="{% static 'sass/default.sass' %}">
-  {% block styles %}{% endblock styles %}
+  {% block styles_compress %}{% endblock styles_compress %}
   {% endcompress %}
 
 </head>
@@ -31,6 +33,7 @@
   {% include 'footer.html' %}
 
   {% bootstrap_javascript jquery=1 %}
+
   {% block scripts %}{% endblock scripts %}
 </body>
 

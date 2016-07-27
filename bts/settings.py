@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'bootstrap3',
     'compressor',
     'info',
+    'django_tables2',
 ]
 
 MIDDLEWARE_CLASSES = [

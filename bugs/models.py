@@ -100,8 +100,10 @@ class BugReport(models.Model):
 
         masters = BugReport.objects.filter(master=None, category=self.category, project=self.project)
         candidates = []
+        max_sim = bug_similarity(self, self)
         for bug in masters:
             candidates.append((bug_similarity(self, bug), bug.id))
-        candidate_ids = [two for (one, two) in sorted(candidates, reverse=True)[1:min(n, len(candidates))]]
-        bugs = [(BugReport.objects.get(id=id)) for id in candidate_ids]
-        return bugs
+        id_and_sim = [(two, one * 100 / max_sim)
+                      for (one, two) in sorted(candidates, reverse=True)[1:min(n, len(candidates))]]
+        bug_and_sim = [(BugReport.objects.get(id=id), sim) for id, sim in id_and_sim]
+        return bug_and_sim
