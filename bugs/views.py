@@ -37,7 +37,7 @@ class BugList(SingleTableMixin, ListView):
         if severity:
             q = q.filter(severity=severity)
         # Apply status filter
-        status = self.request.GET.get('severity')
+        status = self.request.GET.get('status')
         if status:
             q = q.filter(status=status)
         # Apply sort
