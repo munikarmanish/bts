@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'compressor',
     'info',
     'django_tables2',
+    'pure_pagination',
 ]
 
 MIDDLEWARE_CLASSES = [

@@ -5,3 +5,5 @@ django-bootstrap3
 nltk
 scipy
 sklearn
+django_tables2
+django-pure-pagination

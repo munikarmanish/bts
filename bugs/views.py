@@ -3,18 +3,48 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView
+from django_tables2.config import RequestConfig
+from django_tables2.views import SingleTableMixin
+from pure_pagination import EmptyPage, PageNotAnInteger, Paginator
 
 from .forms import BugReportForm
 from .models import BugCategory, BugReport
+from .tables import BugReportTable
 
 
-class BugList(ListView):
+class BugList(SingleTableMixin, ListView):
     context_object_name = 'bugs'
     model = BugReport
     page_kwarg = 'page'
-    # paginate_by = 30
+    paginator_class = Paginator
+    paginate_by = 30
     ordering = '-id'
     template_name = 'bugs/list.html'
+    table_class = BugReportTable
+
+    def get_queryset(self):
+        q = super(BugList, self).get_queryset()
+        # Apply category filter
+        category_id = self.request.GET.get('category')
+        if category_id:
+            q = q.filter(category__id=category_id)
+        # Apply project filter
+        project = self.request.GET.get('project')
+        if project:
+            q = q.filter(project=project)
+        # Apply severity filter
+        severity = self.request.GET.get('severity')
+        if severity:
+            q = q.filter(severity=severity)
+        # Apply status filter
+        status = self.request.GET.get('severity')
+        if status:
+            q = q.filter(status=status)
+        # Apply sort
+        sort = self.request.GET.get('sort')
+        if sort:
+            q = q.order_by(sort)
+        return q
 
 
 class BugDetail(DetailView):

@@ -20,6 +20,7 @@
   {% block styles_compress %}{% endblock styles_compress %}
   {% endcompress %}
 
+  {% bootstrap_javascript jquery=1 %}
 </head>
 
 <body>
@@ -31,8 +32,6 @@
   {% block main %}{% endblock main %}
 
   {% include 'footer.html' %}
-
-  {% bootstrap_javascript jquery=1 %}
 
   {% block scripts %}{% endblock scripts %}
 </body>

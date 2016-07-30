@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load bootstrap3 %}
 {% load staticfiles %}
+{% load querystring from django_tables2 %}
 
 {% block head_title %}Bug reports{% endblock head_title %}
 
@@ -19,59 +20,91 @@
 
   <hr>
 
-  <table class="table table-hover table-condensed" id="bugs-table">
+  {# Filter form #}
+  <div>
+    <p>This is the place for filter form.</p>
+  </div>
+
+  <table class="table table-condensed table-hover">
+
+    {% if table.show_header %}
     <thead>
     <tr>
-      <th>ID</th>
-      <th>Title</th>
-      <th>Project</th>
-      <th>Category</th>
-      <th>Severity</th>
-      <th>Added on</th>
-      <th>Status</th>
+    {% for column in table.columns %}
+      {% if column.orderable %}
+        <th {{ column.attrs.th.as_html }}>
+          <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">
+            {{ column.header }}
+          </a>
+        </th>
+      {% else %}
+        <th {{ column.attrs.th.as_html }}>{{ column.header }}</th>
+      {% endif %}
+    {% endfor %}
     </tr>
     </thead>
+    {% endif %}
 
     <tbody>
     {% for bug in bugs %}
       <tr>
         <td>{{ bug.id }}</td>
-        <td><a href="{{ bug.get_absolute_url }}">{{ bug.title }}</a></td>
-        <td>{{ bug.project }}</td>
-        <td>{{ bug.category }}</td>
-        <td>{{ bug.get_severity_display }}</td>
+        <td><a href="{{ bug.get_absolute_url }}">{{ bug.title|truncatechars:120 }}</a></td>
+        <td><a href="{% querystring 'project'=bug.project %}">{{ bug.project }}</a></td>
+        <td><a href="{% querystring 'category'=bug.category.id %}">{{ bug.category }}</a></td>
+        <td><a href="{% querystring 'severity'=bug.severity %}">{{ bug.get_severity_display }}</a></td>
         <td>{{ bug.created|date }}</td>
-        <td>{{ bug.get_status_display }}</td>
+        <td><a href="{% querystring 'status'=bug.status %}">{{ bug.get_status_display }}</a></td>
       </tr>
     {% endfor %}
     </tbody>
+
+    {% if table.has_footer %}
+    <tfoot>
+        <tr>
+        {% for column in table.columns %}
+            <td>{{ column.footer }}</td>
+        {% endfor %}
+        </tr>
+    </tfoot>
+    {% endif %}
   </table>
 
-  {% comment %}
-  {# Pagination #}
   {% if is_paginated %}
-  <div class="row">
-  <div class="col-sm-12">
-    <p class="text-center">
+    <nav class="text-center">
+    <ul class="pagination">
+
       {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        <li><a href="{% querystring 'page'=page_obj.previous_page_number %}" class="prev">&lsaquo;&lsaquo; Previous</a></li>
+      {% else %}
+        <li class="disabled prev"><a href="#">&lsaquo;&lsaquo; Previous</a></li>
       {% endif %}
-      <span class="page-current">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-      </span>
+
+      {% for page in page_obj.pages %}
+        {% if page %}
+          {% ifequal page page_obj.number %}
+            <li class="active"><a href="#">{{ page }}</a></li>
+          {% else %}
+            <li><a href="{% querystring 'page'=page %}" class="page">{{ page }}</a></li>
+          {% endifequal %}
+        {% else %}
+            <li><a>...</a></li>
+        {% endif %}
+      {% endfor %}
+
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        <li><a href="{% querystring 'page'=page_obj.next_page_number %}" class="next">Next &rsaquo;&rsaquo;</a></li>
+      {% else %}
+        <li class="disabled next"><a href="#">Next &rsaquo;&rsaquo;</a></li>
       {% endif %}
-    </p>
-  </div>{# col #}
-  </div>{# row #}
+
+    </ul>{# pagination #}
+    </nav>
   {% endif %}
-  {% endcomment %}
 
 </div>{# container #}
 {% endblock main %}
 
 {% block scripts %}
-  <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
   <script src="{% static 'js/default.js' %}"></script>
 {% endblock scripts %}
