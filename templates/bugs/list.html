@@ -21,9 +21,19 @@
   <hr>
 
   {# Filter form #}
-  <div>
-    <p>This is the place for filter form.</p>
+  <div class="filters">
+    <form class="form form-inline" action="" method="get">
+      {{ filter_form.category.label_tag }}
+      {{ filter_form.category }}
+      {{ filter_form.severity.label_tag }}
+      {{ filter_form.severity }}
+      {{ filter_form.status.label_tag }}
+      {{ filter_form.status }}
+      <button type="submit">Apply Filters</button>
+    </form>
   </div>
+
+  <hr>
 
   <table class="table table-condensed table-hover">
 
@@ -48,11 +58,11 @@
     <tbody>
     {% for bug in bugs %}
       <tr>
-        <td>{{ bug.id }}</td>
+        <td>#{{ bug.id }}</td>
         <td><a href="{{ bug.get_absolute_url }}">{{ bug.title|truncatechars:120 }}</a></td>
-        <td><a href="{% querystring 'project'=bug.project %}">{{ bug.project }}</a></td>
-        <td><a href="{% querystring 'category'=bug.category.id %}">{{ bug.category }}</a></td>
-        <td><a href="{% querystring 'severity'=bug.severity %}">{{ bug.get_severity_display }}</a></td>
+        <td><a href="{% querystring 'project'=bug.project 'page'=''%}">{{ bug.project }}</a></td>
+        <td><a href="{% querystring 'category'=bug.category.id 'page'='' %}">{{ bug.category }}</a></td>
+        <td><a href="{% querystring 'severity'=bug.severity 'page'='' %}">{{ bug.get_severity_display }}</a></td>
         <td>{{ bug.created|date }}</td>
         <td><a href="{% querystring 'status'=bug.status %}">{{ bug.get_status_display }}</a></td>
       </tr>

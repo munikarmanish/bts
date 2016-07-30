@@ -7,7 +7,7 @@ from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from pure_pagination import EmptyPage, PageNotAnInteger, Paginator
 
-from .forms import BugReportForm
+from .forms import BugReportForm, FilterForm
 from .models import BugCategory, BugReport
 from .tables import BugReportTable
 
@@ -45,6 +45,11 @@ class BugList(SingleTableMixin, ListView):
         if sort:
             q = q.order_by(sort)
         return q
+
+    def get_context_data(self, **kwargs):
+        c = super(BugList, self).get_context_data(**kwargs)
+        c['filter_form'] = FilterForm(data=self.request.GET.dict())
+        return c
 
 
 class BugDetail(DetailView):
