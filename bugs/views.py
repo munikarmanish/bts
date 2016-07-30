@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.shortcuts import render
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView
@@ -40,6 +41,10 @@ class BugList(SingleTableMixin, ListView):
         status = self.request.GET.get('status')
         if status:
             q = q.filter(status=status)
+        # Apply keywords filter
+        keywords = self.request.GET.get('keywords')
+        if keywords:
+            q = q.filter(Q(title__icontains=keywords))
         # Apply sort
         sort = self.request.GET.get('sort')
         if sort:

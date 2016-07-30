@@ -17,6 +17,18 @@ class FilterForm(forms.Form):
     STATUS_CHOICES = [('', '---------'), ]
     STATUS_CHOICES.extend(BugReport.STATUS_CHOICES)
 
-    category = forms.ModelChoiceField(queryset=BugCategory.objects.all().order_by('name'), required=False)
-    severity = forms.ChoiceField(choices=SEVERITY_CHOICES, required=False)
-    status = forms.ChoiceField(choices=STATUS_CHOICES, required=False)
+    category = forms.ModelChoiceField(
+        queryset=BugCategory.objects.all().order_by('name'),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    severity = forms.ChoiceField(
+        choices=SEVERITY_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    status = forms.ChoiceField(
+        choices=STATUS_CHOICES,
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    keywords = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
