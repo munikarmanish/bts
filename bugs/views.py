@@ -1,15 +1,15 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core import mail
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import render
-from django.views.generic import DetailView, ListView
-from django.views.generic.edit import CreateView
+from django.views.generic import CreateView, DetailView, ListView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from pure_pagination import EmptyPage, PageNotAnInteger, Paginator
 
 from .forms import BugReportForm, FilterForm
-from .models import BugCategory, BugReport
+from .models import Attachment, BugCategory, BugReport
 from .tables import BugReportTable
 
 
@@ -81,4 +81,16 @@ class BugAdd(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         bug = form.save(commit=False)
         bug.submitter = self.request.user
+        bug.save()
+        # Save the attachments
+        attachments = form.cleaned_data['images']
+        for attachment in attachments:
+            Attachment.objects.create(bug=bug, attachment=attachment)
+        # Send email to the assignee
+        fro = bug.submitter.email
+        to = [bug.assignee.email, ]
+        subject = 'New bug report assigned to you!'
+        message = bug.get_absolute_url()
+        mail.send_mail(subject, message, fro, to, fail_silently=False)
+
         return super(BugAdd, self).form_valid(form)

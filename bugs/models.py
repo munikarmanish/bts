@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -80,6 +82,12 @@ class BugReport(models.Model):
     # Fields for algorithms
     master = models.ForeignKey('self', null=True, blank=True, limit_choices_to={'master': None})
 
+    # Solution
+    assignee = models.ForeignKey(
+        User, related_name='bugreports', null=True, blank=True,
+        limit_choices_to={'is_staff': True})
+    solution = models.TextField(null=True, verbose_name='Solution')
+
     class Meta:
         verbose_name = 'Bug report'
         verbose_name_plural = 'Bug reports'
@@ -107,3 +115,24 @@ class BugReport(models.Model):
                       for (one, two) in sorted(candidates, reverse=True)[1:min(n, len(candidates))]]
         bug_and_sim = [(BugReport.objects.get(id=id), sim) for id, sim in id_and_sim]
         return bug_and_sim
+
+
+class Attachment(models.Model):
+    bug = models.ForeignKey(BugReport, related_name='attachments')
+    attachment = models.ImageField(height_field='height', width_field='width')
+    height = models.IntegerField(blank=True, null=True)
+    width = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Attachment'
+        verbose_name_plural = 'Attachments'
+
+    def filename(self):
+        return os.path.basename(self.attachment.name)
+
+    def fullpath(self):
+        return self.attachment.name
+
+    @python_2_unicode_compatible
+    def __str__(self):
+        return self.filename()

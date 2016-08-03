@@ -12,7 +12,8 @@
 <div class="container">
 
   <h1>
-    <small>[#{{ bug.id }}] {% if bug.is_solved %}<span class="text-success">[SOLVED]</span>{% endif %}</small><br>
+    <small>[#{{ bug.id }}] {% if bug.is_solved %}<span class="text-success">[SOLVED]</span>{% endif %}</small>
+    <br>
     {{ bug.title }}
   </h1>
 
@@ -24,55 +25,81 @@
       <p>Marked as duplicate of <a href="{{ bug.master.get_absolute_url }}">#{{ bug.master.id }}</a>.
       {% endif %}
 
-      <hr>
+      <div class="well">
+      <div class="row">
 
-      <ul>
-        <li><strong>Submitter:</strong> <a href="#">{{ bug.submitter }}</a></li>
-        <li><strong>Submitted on:</strong> {{ bug.created|date }}</li>
-        <li><strong>Category:</strong> <a href="#">{{ bug.category }}</a></li>
-        <li><strong>Severity:</strong> {{ bug.get_severity_display }}</li>
-        <li><strong>Status:</strong> {{ bug.get_status_display }}</li>
-      </ul>
+        <div class="col-sm-5">
+          <h4>Bug report info:</h4>
+          <ul>
+            <li><strong>Submitter:</strong> <a href="#">{{ bug.submitter }}</a></li>
+            <li><strong>Submitted on:</strong> {{ bug.created|date }}</li>
+            <li><strong>Category:</strong> <a href="#">{{ bug.category }}</a></li>
+            <li><strong>Severity:</strong> {{ bug.get_severity_display }}</li>
+            <li><strong>Status:</strong> {{ bug.get_status_display }}</li>
+          {% if bug.project %}
+            <li><strong>Project title:</strong> {{ bug.project }}</li>
+          {% endif %}
+          {% if bug.particle %}
+            <li><strong>Particle number:</strong> {{ bug.particle }}</li>
+          {% endif %}
+          {% if bug.triangle %}
+            <li><strong>Triangle number:</strong> {{ bug.triangle }}</li>
+          {% endif %}
+          </ul>
+        </div>{# col #}
 
-      <hr>
+        <div class="col-sm-7">
+          <h4>System info:</h4>
+          <ul>
+            <li><strong>Operating system:</strong> {{ bug.os }}</li>
+            <li><strong>RAM:</strong> {{ bug.ram }}</li>
+            <li><strong>GPU version:</strong> {{ bug.gpu }}</li>
+            <li><strong>CUDA cores:</strong> {{ bug.cuda_cores }}</li>
+            <li><strong>Video RAM:</strong> {{ bug.vram }}</li>
+          </ul>
+        </div>{# col #}
 
-      <h3>System info:</h3>
-      <ul>
-        <li><strong>Operating system:</strong> {{ bug.os }}</li>
-        <li><strong>RAM:</strong> {{ bug.ram }}</li>
-        <li><strong>GPU version:</strong> {{ bug.gpu }}</li>
-        <li><strong>CUDA cores:</strong> {{ bug.cuda_cores }}</li>
-        <li><strong>Video RAM:</strong> {{ bug.vram }}</li>
-      </ul>
+      </div>{# row #}
+      </div>{# well #}
 
-      <hr>
+      <h3>Bug description:</h3>
+      <p>{{ bug.description|linebreaks }}</p>
 
-      <h3>Bug details:</h3>
-      <ul>
-        <li><strong>Project title:</strong> {{ bug.project }}</li>
-        <li><strong>Particle number:</strong> {{ bug.particle }}</li>
-        <li><strong>Triangle number:</strong> {{ bug.triangle }}</li>
-      </ul>
+      {% if bug.reproduce %}
+        <h4>Steps to reproduce:</h4>
+        <p>{{ bug.reproduce|linebreaks }}</p>
+      {% endif %}
 
-      <p>
-        <strong>Description:</strong><br>
-        {{ bug.description|linebreaks }}
-      </p>
+      {% if bug.expected %}
+        <h4>Expected behavior:</h4>
+        <p>{{ bug.expected|linebreaks }}</p>
+      {% endif %}
 
-      <p>
-        <strong>Steps to reproduce:</strong><br>
-        {{ bug.reproduce|linebreaks }}
-      </p>
+      {% if bug.actual %}
+        <h4>Actual behavior:</h4>
+        <p>{{ bug.actual|linebreaks }}</p>
+      {% endif %}
 
-      <p>
-        <strong>Expected behavior:</strong><br>
-        {{ bug.expected|linebreaks }}
-      </p>
+      {# Display images #}
+      <section>
+      {% for img in bug.attachments.all %}
+        <a href="{{ MEDIA_URL }}{{ img.fullpath }}">
+          <img src="{{ MEDIA_URL }}{{ img.fullpath }}" class="img-responsive thumbnail">
+        </a>
+      {% endfor %}
+      </section>
 
-      <p>
-        <strong>Actual behavior:</strong><br>
-        {{ bug.actual|linebreaks }}
-      </p>
+      {# Solution #}
+      {% if bug.solution %}
+        <div class="panel panel-success">
+        <div class="panel-heading">
+          <p class="panel-title">Solution</p>
+        </div>{# panel-heading #}
+        <div class="panel-body">
+          <p>{{ bug.solution|linebreaks }}</p>
+        </div>{# panel-body #}
+        </div>{# panel #}
+      {% endif %}
     </div>{# col #}
 
     {# Sidebar #}
@@ -88,13 +115,15 @@
       {% if request.user.is_staff %}
         <div class="list-group-item">
         <div class="row">
+
           <div class="col-xs-2">
-            <div class="progress">
-              <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: {{ s|floatformat:0 }}%">
-                <span class="sr-only">{{ s|floatformat:0 }}% Complete (success)</span>
-              </div>
-            </div>
+          <div class="progress">
+          <div class="progress-bar progress-bar-success" style="width: {{ s|floatformat:0 }}%">
+            <span class="sr-only">{{ s|floatformat:0 }}% Complete (success)</span>
+          </div>
+          </div>
           </div>{# col #}
+
           <div class="col-xs-10">
             <a href="{{ b.get_absolute_url }}">{{ b.title }}</a>
           </div>{# col #}

@@ -1,5 +1,5 @@
 $(document).ready(function() {
 
-    // TODO: Do something awesome here!
+    // Do something awesome
 
 });

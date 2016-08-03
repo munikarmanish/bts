@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .forms import BugReportForm
-from .models import BugCategory, BugReport
+from .models import Attachment, BugCategory, BugReport
 
 
 class BugReportAdmin(admin.ModelAdmin):
@@ -17,3 +17,4 @@ class BugReportAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(BugCategory)
 admin.site.register(BugReport, BugReportAdmin)
+admin.site.register(Attachment)

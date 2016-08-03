@@ -7,3 +7,5 @@ scipy
 sklearn
 django_tables2
 django-pure-pagination
+django-multiupload
+pillow
