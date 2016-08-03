@@ -2,8 +2,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core import mail
 from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import render
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from pure_pagination import EmptyPage, PageNotAnInteger, Paginator
@@ -94,3 +95,21 @@ class BugAdd(LoginRequiredMixin, CreateView):
         mail.send_mail(subject, message, fro, to, fail_silently=False)
 
         return super(BugAdd, self).form_valid(form)
+
+
+class BugUpdate(UpdateView):
+    model = BugReport
+    fields = ['assignee', 'status', 'master', 'is_solved', 'solution']
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    template_name = 'bugs/update.html'
+    context_object_name = 'bug'
+
+    def dispatch(self, *args, **kwargs):
+        # Only allow the assignee
+        if self.request.user != self.get_object().assignee:
+            raise Http404
+        return super(BugUpdate, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        return self.object.get_absolute_url()

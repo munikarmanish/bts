@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block head_title %}Update #{{ bug.id }}{% endblock head_title %}
+
+{% block main %}
+<div class="container">
+
+  <h2>Update Bug Report #{{ bug.id }}</h2>
+
+  <form action="" method="post">{% csrf_token %}
+
+    {% bootstrap_form form %}
+
+    <button type="submit" class="btn btn-lg btn-primary">Update Bug Report</button>
+
+  </form>
+
+</div>{# continer #}
+{% endblock main %}

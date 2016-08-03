@@ -9,23 +9,40 @@
 {% endblock styles_compress %}
 
 {% block main %}
-<div class="container">
 
+<header>
+<div class="container">
   <h1>
     <small>[#{{ bug.id }}] {% if bug.is_solved %}<span class="text-success">[SOLVED]</span>{% endif %}</small>
     <br>
     {{ bug.title }}
   </h1>
+</div>{# container #}
+</header>
 
+{# Action #}
+{% if bug.assignee == request.user %}
+<section class="vpad-sm grey-bg">
+<div class="container">
+  <a href="update" class="btn btn-default">Update Bug Report</a>
+</div>{# container #}
+</section>
+{% endif %}
+
+<section class="vpad-sm">
+<div class="container">
   <div class="row">
 
     {# Column for current bug report #}
     <div class="col-md-7">
       {% if bug.master %}
-      <p>Marked as duplicate of <a href="{{ bug.master.get_absolute_url }}">#{{ bug.master.id }}</a>.
+      <div class="alert alert-info">
+        <p>Marked as duplicate of <a href="{{ bug.master.get_absolute_url }}">#{{ bug.master.id }}</a>.</p>
+      </div>
       {% endif %}
 
-      <div class="well">
+      <div class="panel panel-default">
+      <div class="panel-body">
       <div class="row">
 
         <div class="col-sm-5">
@@ -60,7 +77,8 @@
         </div>{# col #}
 
       </div>{# row #}
-      </div>{# well #}
+      </div>{# panel-body #}
+      </div>{# panel #}
 
       <h3>Bug description:</h3>
       <p>{{ bug.description|linebreaks }}</p>
@@ -143,4 +161,5 @@
   </div>{# row #}
 
 </div>{# container #}
+</section>
 {% endblock main %}
