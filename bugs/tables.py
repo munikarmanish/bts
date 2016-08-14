@@ -6,7 +6,6 @@ from .models import BugReport
 class BugReportTable(tables.Table):
     id = tables.Column(verbose_name='ID')
     title = tables.RelatedLinkColumn(verbose_name='Title')
-    project = tables.Column(verbose_name='Project')
     category = tables.Column(verbose_name='Category')
     severity = tables.Column(verbose_name='Severity')
     created = tables.DateColumn(verbose_name='Created')
@@ -15,5 +14,5 @@ class BugReportTable(tables.Table):
     class Meta:
         model = BugReport
         attrs = {'class': 'table table-condensed'}
-        fields = ['id', 'title', 'project', 'category', 'severity', 'created', 'status']
+        fields = ['id', 'title', 'category', 'severity', 'created', 'status']
         pagination = False

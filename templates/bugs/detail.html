@@ -13,9 +13,7 @@
 <header>
 <div class="container">
   <h1>
-    <small>[#{{ bug.id }}] {% if bug.is_solved %}<span class="text-success">[SOLVED]</span>{% endif %}</small>
-    <br>
-    {{ bug.title }}
+    <small>[#{{ bug.id }}]</small> {{ bug.title }}
   </h1>
 </div>{# container #}
 </header>
@@ -53,15 +51,6 @@
             <li><strong>Category:</strong> <a href="#">{{ bug.category }}</a></li>
             <li><strong>Severity:</strong> {{ bug.get_severity_display }}</li>
             <li><strong>Status:</strong> {{ bug.get_status_display }}</li>
-          {% if bug.project %}
-            <li><strong>Project title:</strong> {{ bug.project }}</li>
-          {% endif %}
-          {% if bug.particle %}
-            <li><strong>Particle number:</strong> {{ bug.particle }}</li>
-          {% endif %}
-          {% if bug.triangle %}
-            <li><strong>Triangle number:</strong> {{ bug.triangle }}</li>
-          {% endif %}
           </ul>
         </div>{# col #}
 
@@ -69,9 +58,8 @@
           <h4>System info:</h4>
           <ul>
             <li><strong>Operating system:</strong> {{ bug.os }}</li>
+            <li><strong>Platform:</strong> {{ bug.platform }}</li>
             <li><strong>RAM:</strong> {{ bug.ram }}</li>
-            <li><strong>GPU version:</strong> {{ bug.gpu }}</li>
-            <li><strong>CUDA cores:</strong> {{ bug.cuda_cores }}</li>
             <li><strong>Video RAM:</strong> {{ bug.vram }}</li>
           </ul>
         </div>{# col #}
@@ -81,11 +69,10 @@
       </div>{# panel #}
 
       <h3>Bug description:</h3>
-      <p>{{ bug.description|linebreaks }}</p>
 
-      {% if bug.reproduce %}
-        <h4>Steps to reproduce:</h4>
-        <p>{{ bug.reproduce|linebreaks }}</p>
+      {% if bug.actual %}
+        <h4>Actual behavior:</h4>
+        <p>{{ bug.actual|linebreaks }}</p>
       {% endif %}
 
       {% if bug.expected %}
@@ -93,9 +80,9 @@
         <p>{{ bug.expected|linebreaks }}</p>
       {% endif %}
 
-      {% if bug.actual %}
-        <h4>Actual behavior:</h4>
-        <p>{{ bug.actual|linebreaks }}</p>
+      {% if bug.reproduce %}
+        <h4>Steps to reproduce:</h4>
+        <p>{{ bug.reproduce|linebreaks }}</p>
       {% endif %}
 
       {# Display images #}

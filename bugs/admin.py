@@ -8,10 +8,11 @@ class BugReportAdmin(admin.ModelAdmin):
 
     form = BugReportForm
     exclude = ('created', 'updated')
-    list_display = ('__str__', 'category', 'status', 'is_solved', 'submitter', 'severity')
-    list_filter = ('category', 'status', 'is_solved', 'severity')
+    list_display = ('id', 'title', 'category', 'status', 'severity', 'submitter')
+    list_display_links = ('id', 'title')
+    list_filter = ('category', 'severity', 'status')
     ordering = ('-created',)
-    search_fields = ('title', 'project', 'description', 'reproduce', 'actual', 'expected', 'submitter')
+    search_fields = ('title', 'reproduce', 'actual', 'expected', 'submitter')
 
 
 # Register your models here.

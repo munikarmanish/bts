@@ -9,7 +9,7 @@ from django_tables2.config import RequestConfig
 from django_tables2.views import SingleTableMixin
 from pure_pagination import EmptyPage, PageNotAnInteger, Paginator
 
-from .forms import BugReportForm, FilterForm
+from .forms import BugReportForm, BugReportUpdateForm, FilterForm
 from .models import Attachment, BugCategory, BugReport
 from .tables import BugReportTable
 
@@ -99,7 +99,7 @@ class BugAdd(LoginRequiredMixin, CreateView):
 
 class BugUpdate(UpdateView):
     model = BugReport
-    fields = ['assignee', 'status', 'master', 'is_solved', 'solution']
+    form_class = BugReportUpdateForm
     slug_field = 'id'
     slug_url_kwarg = 'id'
     template_name = 'bugs/update.html'

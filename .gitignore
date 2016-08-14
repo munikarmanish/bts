@@ -15,3 +15,7 @@ media_cdn
 
 # Environment file
 .env
+
+# Migrations
+*/migrations/*.py
+!*/migrations/__init__.py

@@ -1,6 +1,8 @@
 from django import forms
+from django.contrib.auth.models import User
 from multiupload.fields import MultiImageField
 
+from .fields import UserChoiceField
 from .models import BugCategory, BugReport
 
 
@@ -12,9 +14,20 @@ class BugReportForm(forms.ModelForm):
         required=False,
     )
 
+    assignee = UserChoiceField(queryset=User.objects.filter(is_staff=True))
+
     class Meta:
         model = BugReport
-        exclude = ['created', 'status', 'updated', 'submitter', 'solution', 'is_solved', 'master']
+        exclude = ['created', 'status', 'updated', 'submitter', 'solution',  'master']
+
+
+class BugReportUpdateForm(forms.ModelForm):
+
+    assignee = UserChoiceField(queryset=User.objects.filter(is_staff=True))
+
+    class Meta:
+        model = BugReport
+        fields = ['assignee', 'category', 'severity', 'status', 'master', 'solution']
 
 
 class FilterForm(forms.Form):

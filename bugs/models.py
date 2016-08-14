@@ -28,25 +28,27 @@ class BugReport(models.Model):
     SEVERITY_NORMAL = 2
     SEVERITY_HIGH = 3
     SEVERITY_URGENT = 4
-    SEVERITY_IMMEDIATE = 5
+    SEVERITY_FEATURE = 0
 
     SEVERITY_CHOICES = (
         (SEVERITY_LOW, 'Low'),
         (SEVERITY_NORMAL, 'Normal'),
         (SEVERITY_HIGH, 'High'),
         (SEVERITY_URGENT, 'Urgent'),
-        (SEVERITY_IMMEDIATE, 'Immediate'),
+        (SEVERITY_FEATURE, 'Feature'),
     )
 
     # Status choices
     STATUS_NEW = 0
-    STATUS_MASTER = 1
-    STATUS_DUPLICATE = 2
+    STATUS_REJECTED = 1
+    STATUS_ASSIGNED = 2
+    STATUS_FIXED = 3
 
     STATUS_CHOICES = (
         (STATUS_NEW, 'New'),
-        (STATUS_MASTER, 'Master'),
-        (STATUS_DUPLICATE, 'Duplicate'),
+        (STATUS_REJECTED, 'Rejected'),
+        (STATUS_ASSIGNED, 'Assigned'),
+        (STATUS_FIXED, 'Fixed'),
     )
 
     # Timestamps
@@ -55,50 +57,51 @@ class BugReport(models.Model):
 
     # Core important fields
     title = models.CharField(max_length=255)
-    submitter = models.ForeignKey(User)
+    submitter = models.ForeignKey(User, related_name='submitted_reports')
 
     # Versions
     os = models.CharField(blank=True, max_length=100, verbose_name='Operating system')
+    platform = models.CharField(blank=True, max_length=100, verbose_name='Platform')
     ram = models.CharField(blank=True, max_length=100, verbose_name='RAM')
-    gpu = models.CharField(blank=True, max_length=100, verbose_name='GPU')
-    cuda_cores = models.CharField(blank=True, max_length=100, verbose_name='CUDA cores')
     vram = models.CharField(blank=True, max_length=100, verbose_name='Video RAM')
 
     # Filterable fields
     category = models.ForeignKey(BugCategory)
     severity = models.SmallIntegerField(choices=SEVERITY_CHOICES, default=SEVERITY_NORMAL)
     status = models.SmallIntegerField(choices=STATUS_CHOICES, default=STATUS_NEW)
-    is_solved = models.BooleanField(default=False)
 
     # Description fields
-    project = models.CharField(blank=True, max_length=100, verbose_name='Project title')
-    particle = models.CharField(blank=True, max_length=100, verbose_name='Particle number')
-    triangle = models.CharField(blank=True, max_length=100, verbose_name='Triangle number')
-    description = models.TextField()
-    reproduce = models.TextField(blank=True, verbose_name='Steps to reproduce')
-    actual = models.TextField(blank=True, verbose_name='Actual behavior')
     expected = models.TextField(blank=True, verbose_name='Expected behavior')
+    actual = models.TextField(blank=True, verbose_name='Actual behavior')
+    reproduce = models.TextField(blank=True, verbose_name='Steps to reproduce')
 
     # Fields for algorithms
     master = models.ForeignKey('self', null=True, blank=True, limit_choices_to={'master': None})
 
     # Solution
     assignee = models.ForeignKey(
-        User, related_name='bugreports', null=True, blank=True,
+        User, related_name='assigned_reports', null=True, blank=True,
         limit_choices_to={'is_staff': True})
     solution = models.TextField(null=True, verbose_name='Solution')
 
     class Meta:
         verbose_name = 'Bug report'
         verbose_name_plural = 'Bug reports'
+        ordering = ['-created', ]
 
     @python_2_unicode_compatible
     def __str__(self):
         title = "[#{id}] {title}"
-        return title.format(id=self.id, title=Truncator(self.title).chars(30))
+        return title.format(id=self.id, title=Truncator(self.title).chars(100))
 
     def get_absolute_url(self):
         return reverse('bugs_detail', kwargs={'id': self.id})
+
+    def is_fixed(self):
+        return self.status == STATUS_FIXED
+
+    def detail_text(self):
+        s = ' '.join([self.os, self.platform, self.ram, self.vram, self.expected, self.actual, self.reproduce])
 
     def similarity(bug):
         return token_similarity(tokenize(self.title), tokenize(bug.title))
@@ -106,10 +109,9 @@ class BugReport(models.Model):
     def get_similar_reports(self, n=10):
         from .utils import bug_similarity
 
-        masters = BugReport.objects.filter(master=None, category=self.category, project=self.project)
         candidates = []
         max_sim = bug_similarity(self, self)
-        for bug in masters:
+        for bug in BugReport.objects.filter(category=self.category):
             candidates.append((bug_similarity(self, bug), bug.id))
         id_and_sim = [(two, one * 100 / max_sim)
                       for (one, two) in sorted(candidates, reverse=True)[1:min(n, len(candidates))]]

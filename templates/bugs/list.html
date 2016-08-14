@@ -39,7 +39,8 @@
         <span class="input-group-addon">Keywords</span>
         {{ filter_form.keywords }}
       </div>{# input-group #}
-      <button type="submit" class="btn btn-default">Apply Filters</button>
+      <button type="submit" class="btn btn-primary">Apply Filters</button>
+      <a href="?" class="btn btn-default">Clear Filters</a>
     </form>
   </div>
 
@@ -70,7 +71,6 @@
       <tr>
         <td>#{{ bug.id }}</td>
         <td><a href="{{ bug.get_absolute_url }}">{{ bug.title|truncatechars:100 }}</a></td>
-        <td><a href="{% querystring 'project'=bug.project 'page'=''%}">{{ bug.project }}</a></td>
         <td><a href="{% querystring 'category'=bug.category.id 'page'='' %}">{{ bug.category }}</a></td>
         <td><a href="{% querystring 'severity'=bug.severity 'page'='' %}">{{ bug.get_severity_display }}</a></td>
         <td>{{ bug.created|date }}</td>
