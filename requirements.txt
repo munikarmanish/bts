@@ -2,6 +2,8 @@ django==1.9.8
 django-environ
 psycopg2
 django-bootstrap3
+django-compressor
+django-libsass
 nltk
 scipy
 sklearn
