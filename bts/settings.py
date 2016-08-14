@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'django_tables2',
     'pure_pagination',
     'multiupload',
+    'learn',
 ]
 
 MIDDLEWARE_CLASSES = [
