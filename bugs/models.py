@@ -61,7 +61,6 @@ class BugReport(models.Model):
 
     # Versions
     os = models.CharField(blank=True, max_length=100, verbose_name='Operating system')
-    platform = models.CharField(blank=True, max_length=100, verbose_name='Platform')
     ram = models.CharField(blank=True, max_length=100, verbose_name='RAM')
     vram = models.CharField(blank=True, max_length=100, verbose_name='Video RAM')
 
@@ -101,7 +100,7 @@ class BugReport(models.Model):
         return self.status == STATUS_FIXED
 
     def detail_text(self):
-        s = ' '.join([self.os, self.platform, self.ram, self.vram, self.expected, self.actual, self.reproduce])
+        return " ".join([self.os, self.ram, self.vram, self.expected, self.actual, self.reproduce])
 
     def similarity(bug):
         return token_similarity(tokenize(self.title), tokenize(bug.title))
