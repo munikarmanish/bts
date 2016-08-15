@@ -6,7 +6,7 @@ from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
-from info.models import Frequency
+from info.models import Frequency, FrequencyDetail, FrequencyTitle
 
 from .models import BugCategory, BugReport
 
@@ -21,9 +21,49 @@ def tokenize(text):
     return tokens
 
 
+# The TFs
+
+def tf(bug, term):
+    qs = Frequency.objects.filter(bug=bug, term=term)
+    if qs.count() > 0:
+        return qs.first().freq
+    else:
+        return 0
+
+
+def tf_title(bug, term):
+    qs = FrequencyTitle.objects.filter(bug=bug, term=term)
+    if qs.count() > 0:
+        return qs.first().freq
+    else:
+        return 0
+
+
+def tf_detail(bug, term):
+    qs = FrequencyDetail.objects.filter(bug=bug, term=term)
+    if qs.count() > 0:
+        return qs.first().freq
+    else:
+        return 0
+
+
+# The IDFs
+
 def idf(term):
     Da = BugReport.objects.count()
     Dt = Frequency.objects.filter(term=term).count()
+    return n.log2(Da / (1 + Dt))
+
+
+def idf_title(term):
+    Da = BugReport.objects.count()
+    Dt = FrequencyTitle.objects.filter(term=term).count()
+    return n.log2(Da / (1 + Dt))
+
+
+def idf_detail(term):
+    Da = BugReport.objects.count()
+    Dt = FrequencyDetail.objects.filter(term=term).count()
     return n.log2(Da / (1 + Dt))
 
 

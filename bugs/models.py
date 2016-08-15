@@ -102,6 +102,9 @@ class BugReport(models.Model):
     def detail_text(self):
         return " ".join([self.os, self.ram, self.vram, self.expected, self.actual, self.reproduce])
 
+    def all_text(self):
+        return " ".join([self.title, self.detail_text()])
+
     def similarity(bug):
         return token_similarity(tokenize(self.title), tokenize(bug.title))
 
