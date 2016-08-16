@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Clear the bug reports
-        BugReport.objects.all().delete()
+        BugReport.objects.raw('TRUNCATE bugs_bugreport CASCADE')
 
         # Read the CSV file
         filename = options["filename"]
@@ -32,7 +32,7 @@ class Command(BaseCommand):
         user = User.objects.get(username="admin")
 
         def cat(name):
-            return BugCategory.objects.get(name=name)
+            return BugCategory.objects.get_or_create(name=name)[0]
 
         def stat(s):
             if s == "New":
@@ -90,3 +90,4 @@ class Command(BaseCommand):
                 master=mast(r[11]), solution=r[12],
                 submitter=user, assignee=user)
             bug.save()
+            print(bug)

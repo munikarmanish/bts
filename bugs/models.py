@@ -58,7 +58,7 @@ class BugReport(models.Model):
 
     # Core important fields
     title = models.CharField(max_length=255)
-    submitter = models.ForeignKey(User, related_name='submitted_reports')
+    submitter = models.ForeignKey(User, related_name='submitted_reports', on_delete=models.CASCADE)
 
     # Versions
     os = models.CharField(blank=True, max_length=100, verbose_name='Operating system')
@@ -66,7 +66,7 @@ class BugReport(models.Model):
     vram = models.CharField(blank=True, max_length=100, verbose_name='Video RAM')
 
     # Filterable fields
-    category = models.ForeignKey(BugCategory)
+    category = models.ForeignKey(BugCategory, null=True, on_delete=models.SET_NULL)
     severity = models.SmallIntegerField(choices=SEVERITY_CHOICES, default=SEVERITY_NORMAL)
     status = models.SmallIntegerField(choices=STATUS_CHOICES, default=STATUS_NEW)
 
@@ -77,11 +77,12 @@ class BugReport(models.Model):
 
     # Fields for algorithms
     master = models.ForeignKey(
-        'self', related_name='duplicates', null=True, blank=True, limit_choices_to={'master': None})
+        'self', related_name='duplicates', null=True, blank=True, on_delete=models.SET_NULL,
+        limit_choices_to={'master': None})
 
     # Solution
     assignee = models.ForeignKey(
-        User, related_name='assigned_reports', null=True, blank=True,
+        User, related_name='assigned_reports', null=True, blank=True, on_delete=models.SET_NULL,
         limit_choices_to={'is_staff': True})
     solution = models.TextField(blank=True, null=True, verbose_name='Solution')
 
@@ -134,7 +135,7 @@ class BugReport(models.Model):
 
 
 class Attachment(models.Model):
-    bug = models.ForeignKey(BugReport, related_name='attachments')
+    bug = models.ForeignKey(BugReport, related_name='attachments', on_delete=models.CASCADE)
     attachment = models.ImageField(height_field='height', width_field='width')
     height = models.IntegerField(blank=True, null=True)
     width = models.IntegerField(blank=True, null=True)
