@@ -67,22 +67,27 @@
       </div>{# panel-body #}
       </div>{# panel #}
 
-      <h3>Bug description:</h3>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Bug description:</h3>
+        </div>{# panel-heading #}
+        <div class="panel-body">
+          {% if bug.actual %}
+            <h4>Actual behavior:</h4>
+            <p>{{ bug.actual|linebreaks }}</p>
+          {% endif %}
 
-      {% if bug.actual %}
-        <h4>Actual behavior:</h4>
-        <p>{{ bug.actual|linebreaks }}</p>
-      {% endif %}
+          {% if bug.expected %}
+            <h4>Expected behavior:</h4>
+            <p>{{ bug.expected|linebreaks }}</p>
+          {% endif %}
 
-      {% if bug.expected %}
-        <h4>Expected behavior:</h4>
-        <p>{{ bug.expected|linebreaks }}</p>
-      {% endif %}
-
-      {% if bug.reproduce %}
-        <h4>Steps to reproduce:</h4>
-        <p>{{ bug.reproduce|linebreaks }}</p>
-      {% endif %}
+          {% if bug.reproduce %}
+            <h4>Steps to reproduce:</h4>
+            <p>{{ bug.reproduce|linebreaks }}</p>
+          {% endif %}
+        </div>{# panel-body #}
+      </div>{# panel #}
 
       {# Display images #}
       <section>
