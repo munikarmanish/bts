@@ -71,3 +71,51 @@ def idf_detail(term):
 def similarity(text1, text2, idf_func=idf):
     common = set(tokenize(text1)).intersection(set(tokenize(text2)))
     return n.sum([idf_func(w) for w in common])
+
+
+def feature_set(bug1, bug2):
+    row = []
+
+    # idf_title
+
+    row.append(similarity(bug1.title, bug2.title, idf_title))
+    row.append(similarity(bug1.title, bug2.detail_text(), idf_title))
+    row.append(similarity(bug1.title, bug2.all_text(), idf_title))
+
+    row.append(similarity(bug1.detail_text(), bug2.title, idf_title))
+    row.append(similarity(bug1.detail_text(), bug2.detail_text(), idf_title))
+    row.append(similarity(bug1.detail_text(), bug2.all_text(), idf_title))
+
+    row.append(similarity(bug1.all_text(), bug2.title, idf_title))
+    row.append(similarity(bug1.all_text(), bug2.detail_text(), idf_title))
+    row.append(similarity(bug1.all_text(), bug2.all_text(), idf_title))
+
+    # idf_detail
+
+    row.append(similarity(bug1.title, bug2.title, idf_detail))
+    row.append(similarity(bug1.title, bug2.detail_text(), idf_detail))
+    row.append(similarity(bug1.title, bug2.all_text(), idf_detail))
+
+    row.append(similarity(bug1.detail_text(), bug2.title, idf_detail))
+    row.append(similarity(bug1.detail_text(), bug2.detail_text(), idf_detail))
+    row.append(similarity(bug1.detail_text(), bug2.all_text(), idf_detail))
+
+    row.append(similarity(bug1.all_text(), bug2.title, idf_detail))
+    row.append(similarity(bug1.all_text(), bug2.detail_text(), idf_detail))
+    row.append(similarity(bug1.all_text(), bug2.all_text(), idf_detail))
+
+    # idf_all
+
+    row.append(similarity(bug1.title, bug2.title))
+    row.append(similarity(bug1.title, bug2.detail_text()))
+    row.append(similarity(bug1.title, bug2.all_text()))
+
+    row.append(similarity(bug1.detail_text(), bug2.title))
+    row.append(similarity(bug1.detail_text(), bug2.detail_text()))
+    row.append(similarity(bug1.detail_text(), bug2.all_text()))
+
+    row.append(similarity(bug1.all_text(), bug2.title))
+    row.append(similarity(bug1.all_text(), bug2.detail_text()))
+    row.append(similarity(bug1.all_text(), bug2.all_text()))
+
+    return row

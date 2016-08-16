@@ -3,6 +3,7 @@ import os
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models import Q
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import Truncator
 
@@ -75,7 +76,8 @@ class BugReport(models.Model):
     reproduce = models.TextField(blank=True, verbose_name='Steps to reproduce')
 
     # Fields for algorithms
-    master = models.ForeignKey('self', null=True, blank=True, limit_choices_to={'master': None})
+    master = models.ForeignKey(
+        'self', related_name='duplicates', null=True, blank=True, limit_choices_to={'master': None})
 
     # Solution
     assignee = models.ForeignKey(
@@ -117,8 +119,18 @@ class BugReport(models.Model):
         bug_and_sim = [(BugReport.objects.get(id=id), sim) for id, sim in id_and_sim]
         return bug_and_sim
 
-    def get_possible_duplicates(self):
-        pass
+    def get_possible_duplicates(self, n=10):
+        from info.utils import feature_set
+        from learn.utils import LearningModel
+
+        model = LearningModel()
+
+        candidates_sim = []
+        for b in BugReport.objects.filter(Q(category=self.category), ~Q(id=self.id)):
+            candidates_sim.append((model.predict(feature_set(self, b)), b.id))
+        bug_sim = [(BugReport.objects.get(id=id), sim * 100)
+                   for sim, id in sorted(candidates_sim, reverse=True)[:min(n, len(candidates_sim))]]
+        return bug_sim
 
 
 class Attachment(models.Model):
