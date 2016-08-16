@@ -67,6 +67,7 @@ class LearningModel(object):
             return cost_function(n.matrix(theta).T, X, y)
 
         # This is the meat of the learning algorithm
-        result = o.minimize(J, self.theta.A1)
+        initial_theta = n.random.random(X.shape[1])
+        result = o.minimize(J, initial_theta)
         self.theta = n.matrix(result.x).T
         self.save()
