@@ -81,7 +81,7 @@ class BugReport(models.Model):
     assignee = models.ForeignKey(
         User, related_name='assigned_reports', null=True, blank=True,
         limit_choices_to={'is_staff': True})
-    solution = models.TextField(null=True, verbose_name='Solution')
+    solution = models.TextField(blank=True, null=True, verbose_name='Solution')
 
     class Meta:
         verbose_name = 'Bug report'
@@ -105,20 +105,20 @@ class BugReport(models.Model):
     def all_text(self):
         return " ".join([self.title, self.detail_text()])
 
-    def similarity(bug):
-        return token_similarity(tokenize(self.title), tokenize(bug.title))
-
     def get_similar_reports(self, n=10):
-        from .utils import bug_similarity
+        from info.utils import similarity, idf, idf_detail, idf_title
 
         candidates = []
-        max_sim = bug_similarity(self, self)
+        max_sim = similarity(self.all_text(), self.all_text())
         for bug in BugReport.objects.filter(category=self.category):
-            candidates.append((bug_similarity(self, bug), bug.id))
+            candidates.append((similarity(self.all_text(), bug.all_text()), bug.id))
         id_and_sim = [(two, one * 100 / max_sim)
                       for (one, two) in sorted(candidates, reverse=True)[1:min(n, len(candidates))]]
         bug_and_sim = [(BugReport.objects.get(id=id), sim) for id, sim in id_and_sim]
         return bug_and_sim
+
+    def get_possible_duplicates(self):
+        pass
 
 
 class Attachment(models.Model):

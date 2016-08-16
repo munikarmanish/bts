@@ -8,6 +8,7 @@
 *#
 *.pickle
 *.db.json
+*.csv
 
 # Static / media
 static_cdn

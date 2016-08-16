@@ -1,14 +1,13 @@
 import string
 
 import numpy as n
+from bugs.models import BugCategory, BugReport
 from django.db.models import Count
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
-from info.models import Frequency, FrequencyDetail, FrequencyTitle
-
-from .models import BugCategory, BugReport
+from .models import Frequency, FrequencyDetail, FrequencyTitle
 
 
 def tokenize(text):
@@ -67,10 +66,8 @@ def idf_detail(term):
     return n.log2(Da / (1 + Dt))
 
 
-def token_similarity(tokens1, tokens2):
-    common = set(tokens1).intersection(set(tokens2))
-    return n.sum([idf(w) for w in common])
+# The similarities
 
-
-def bug_similarity(bug1, bug2):
-    return token_similarity(tokenize(bug1.title), tokenize(bug2.title))
+def similarity(text1, text2, idf_func=idf):
+    common = set(tokenize(text1)).intersection(set(tokenize(text2)))
+    return n.sum([idf_func(w) for w in common])

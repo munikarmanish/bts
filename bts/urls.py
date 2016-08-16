@@ -18,13 +18,15 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from .views import Home
+from .views import Home, fill
 
 urlpatterns = [
     url(r'^$', Home.as_view(), name='home'),
     url(r'^', include('accounts.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^bugs/', include('bugs.urls')),
+
+    url(r'^fill/$', fill)
 ]
 
 if settings.DEBUG:
