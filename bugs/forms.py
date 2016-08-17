@@ -7,6 +7,8 @@ from .models import BugCategory, BugReport
 
 
 class BugReportForm(forms.ModelForm):
+    """Form to submit new bug reports."""
+
     images = MultiImageField(
         label='Images',
         max_num=3,
@@ -22,6 +24,7 @@ class BugReportForm(forms.ModelForm):
 
 
 class BugReportUpdateForm(forms.ModelForm):
+    """Form for assignee to update the bug report."""
 
     assignee = UserChoiceField(queryset=User.objects.filter(is_staff=True))
 
@@ -31,6 +34,7 @@ class BugReportUpdateForm(forms.ModelForm):
 
 
 class FilterForm(forms.Form):
+    """Form to apply filters in the list of bug reports."""
 
     SEVERITY_CHOICES = [('', '---------'), ]
     SEVERITY_CHOICES.extend(BugReport.SEVERITY_CHOICES)

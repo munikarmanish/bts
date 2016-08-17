@@ -4,6 +4,9 @@ from .models import BugReport
 
 
 class BugReportTable(tables.Table):
+    """This is used to get the sort-by-column feature in the list
+    of bug reports."""
+
     id = tables.Column(verbose_name='ID')
     title = tables.RelatedLinkColumn(verbose_name='Title')
     category = tables.Column(verbose_name='Category')

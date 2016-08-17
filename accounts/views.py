@@ -6,6 +6,8 @@ from .forms import RegistrationForm
 
 
 class Register(FormView):
+    """Registration (Signup) view."""
+
     form_class = RegistrationForm
     success_url = '/'
     template_name = 'accounts/register.html'

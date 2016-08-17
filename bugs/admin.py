@@ -5,6 +5,7 @@ from .models import Attachment, BugCategory, BugReport
 
 
 class BugReportAdmin(admin.ModelAdmin):
+    """The admin site interface of the `BugReport` model."""
 
     form = BugReportForm
     exclude = ('created', 'updated')

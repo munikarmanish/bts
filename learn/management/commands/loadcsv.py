@@ -8,14 +8,14 @@ from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
 
-    help = "Make sure you have user 'admin'"
+    help = "Reload bug report database from a valid CSV file ('admin' user required)"
 
     def add_arguments(self, parser):
-        parser.add_argument("filename")
+        parser.add_argument("filename", help="Path to the CSV file")
 
     def handle(self, *args, **options):
         # Clear the bug reports
-        BugReport.objects.raw('TRUNCATE bugs_bugreport CASCADE')
+        BugReport.objects.all().delete()
 
         # Read the CSV file
         filename = options["filename"]
@@ -32,35 +32,45 @@ class Command(BaseCommand):
         user = User.objects.get(username="admin")
 
         def cat(name):
+            """Returns the category with the given name, creating a new one if required.
+            """
             return BugCategory.objects.get_or_create(name=name)[0]
 
-        def stat(s):
-            if s == "New":
+        def stat(name):
+            """Returns the status number with the given name.
+            """
+            name = name.lower()
+            if name == "new":
                 return BugReport.STATUS_NEW
-            elif s == "Rejected":
+            elif name == "rejected":
                 return BugReport.STATUS_REJECTED
-            elif s == "Assigned":
+            elif name == "assigned":
                 return BugReport.STATUS_ASSIGNED
-            elif s == "Fixed":
+            elif name == "fixed":
                 return BugReport.STATUS_FIXED
             else:
-                raise ValueError("Invalid status name = " + s)
+                raise ValueError("Invalid status name = " + name)
 
-        def sev(s):
-            if s == "Feature":
+        def sev(name):
+            """Returns the severity number with the given name.
+            """
+            name = name.lower()
+            if name == "feature":
                 return BugReport.SEVERITY_FEATURE
-            elif s == "Low":
+            elif name == "low":
                 return BugReport.SEVERITY_LOW
-            elif s == "Normal":
+            elif name == "normal":
                 return BugReport.SEVERITY_NORMAL
-            elif s == "High":
+            elif name == "high":
                 return BugReport.SEVERITY_HIGH
-            elif s == "Urgent":
+            elif name == "urgent":
                 return BugReport.SEVERITY_URGENT
             else:
-                raise ValueError("Invalid severity name = " + s)
+                raise ValueError("Invalid severity name = " + name)
 
-        def mast(title):
+        def report(title):
+            """Returns a bug report with the given title.
+            """
             try:
                 master = BugReport.objects.get(title=title)
             except:
@@ -82,12 +92,13 @@ class Command(BaseCommand):
         # 12:= Solution
 
         # Do the work
-        for r in data[1:]:
+        for row in data[1:]:
+            r = [e.strip() for e in row]
             bug = BugReport(
                 title=r[1], os=r[2], ram=r[3], vram=r[4],
                 category=cat(r[5]), severity=sev(r[6]), status=stat(r[7]),
                 actual=r[8], expected=r[9], reproduce=r[10],
-                master=mast(r[11]), solution=r[12],
+                master=report(r[11]), solution=r[12],
                 submitter=user, assignee=user)
             bug.save()
             print(bug)

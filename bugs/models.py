@@ -9,6 +9,11 @@ from django.utils.text import Truncator
 
 
 class BugCategory(models.Model):
+    """Category of bug report
+
+    This is important because when extracting similar bug reports,
+    only those reports of the same category are searched.
+    """
 
     name = models.CharField(max_length=100)
 
@@ -23,6 +28,7 @@ class BugCategory(models.Model):
 
 
 class BugReport(models.Model):
+    """Represents a bug report"""
 
     # Severity choices
     SEVERITY_LOW = 1
@@ -61,9 +67,9 @@ class BugReport(models.Model):
     submitter = models.ForeignKey(User, related_name='submitted_reports', on_delete=models.CASCADE)
 
     # Versions
-    os = models.CharField(blank=True, max_length=100, verbose_name='Operating system')
-    ram = models.CharField(blank=True, max_length=100, verbose_name='RAM')
-    vram = models.CharField(blank=True, max_length=100, verbose_name='Video RAM')
+    os = models.CharField("Operating system", blank=True, max_length=100)
+    ram = models.CharField("RAM", blank=True, max_length=100)
+    vram = models.CharField("Video RAM", blank=True, max_length=100)
 
     # Filterable fields
     category = models.ForeignKey(BugCategory, null=True, on_delete=models.SET_NULL)
@@ -71,9 +77,9 @@ class BugReport(models.Model):
     status = models.SmallIntegerField(choices=STATUS_CHOICES, default=STATUS_NEW)
 
     # Description fields
-    expected = models.TextField(blank=True, verbose_name='Expected behavior')
-    actual = models.TextField(blank=True, verbose_name='Actual behavior')
-    reproduce = models.TextField(blank=True, verbose_name='Steps to reproduce')
+    expected = models.TextField("Expected behavior", blank=True)
+    actual = models.TextField("Actual behavior", blank=True)
+    reproduce = models.TextField("Steps to reproduce", blank=True)
 
     # Fields for algorithms
     master = models.ForeignKey(
@@ -89,7 +95,7 @@ class BugReport(models.Model):
     class Meta:
         verbose_name = 'Bug report'
         verbose_name_plural = 'Bug reports'
-        ordering = ['-created', ]
+        ordering = ['-id', ]
 
     @python_2_unicode_compatible
     def __str__(self):
@@ -109,6 +115,13 @@ class BugReport(models.Model):
         return " ".join([self.title, self.detail_text()])
 
     def get_similar_reports(self, n=10):
+        """Returns a list of similar bug reports based on textual similarity.
+
+        Parameters
+        ----------
+        n : int
+            Maximum number of similar bugs to returns.
+        """
         from info.utils import similarity, idf, idf_detail, idf_title
 
         candidates = []
@@ -121,6 +134,13 @@ class BugReport(models.Model):
         return bug_and_sim
 
     def get_possible_duplicates(self, n=10):
+        """Returns a list of similar bug reports based on learning model.
+
+        Parameters
+        ----------
+        n : int
+            Maximum number of similar bugs to returns.
+        """
         from info.utils import feature_set
         from learn.utils import LearningModel
 
@@ -135,6 +155,8 @@ class BugReport(models.Model):
 
 
 class Attachment(models.Model):
+    """Represents an attachment image of a bug report"""
+
     bug = models.ForeignKey(BugReport, related_name='attachments', on_delete=models.CASCADE)
     attachment = models.ImageField(height_field='height', width_field='width')
     height = models.IntegerField(blank=True, null=True)
@@ -145,9 +167,11 @@ class Attachment(models.Model):
         verbose_name_plural = 'Attachments'
 
     def filename(self):
+        """Returns the base filename of the attachment."""
         return os.path.basename(self.attachment.name)
 
     def fullpath(self):
+        """Returns the absolute filename of the attachment (after the MEDIA_ROOT)."""
         return self.attachment.name
 
     @python_2_unicode_compatible

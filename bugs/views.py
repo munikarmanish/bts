@@ -15,6 +15,8 @@ from .tables import BugReportTable
 
 
 class BugList(SingleTableMixin, ListView):
+    """Displays a sortable and filterable list of bug reports."""
+
     context_object_name = 'bugs'
     model = BugReport
     page_kwarg = 'page'
@@ -59,6 +61,9 @@ class BugList(SingleTableMixin, ListView):
 
 
 class BugDetail(DetailView):
+    """Displays the information for a particular bug reports including
+    a list of similar bug reports."""
+
     model = BugReport
     slug_field = 'id'
     slug_url_kwarg = 'id'
@@ -67,6 +72,8 @@ class BugDetail(DetailView):
 
 
 class BugAdd(LoginRequiredMixin, CreateView):
+    """View for submitting new bug reports."""
+
     model = BugReport
     form_class = BugReportForm
     template_name = 'bugs/form.html'
@@ -98,6 +105,8 @@ class BugAdd(LoginRequiredMixin, CreateView):
 
 
 class BugUpdate(UpdateView):
+    """View for updating the bug report's status, solution, etc."""
+
     model = BugReport
     form_class = BugReportUpdateForm
     slug_field = 'id'

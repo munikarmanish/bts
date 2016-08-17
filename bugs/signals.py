@@ -9,6 +9,17 @@ from .models import BugReport
 
 @receiver(post_save, sender=BugReport)
 def bug_report_post_save(sender, instance, created, **kwargs):
+    """Updates the frequencies based on updates in the bug report.
+
+    Parameters
+    ----------
+    sender : class
+        The sender class.
+    instance : object
+        The object of `sender` that caused the signal to be sent.
+    created : bool
+        Whether instance is created (true) or updated (false).
+    """
 
     # Update the FrequencyTitle table
     terms = tokenize(instance.title)

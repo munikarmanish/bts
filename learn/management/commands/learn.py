@@ -13,6 +13,15 @@ from learn.utils import LearningModel
 
 
 def get_training_row(bug1, bug2, y):
+    """Retuns a row of training matrix as a list.
+
+    Parameters
+    ----------
+    bug1, bug2: BugReport
+        Pair of bug reports to extract feature from.
+    y : {0, 1}
+        The output for the pair.
+    """
     row = feature_set(bug1, bug2)
     row.append(y)
     return row

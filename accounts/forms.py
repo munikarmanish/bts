@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 
 class RegistrationForm(auth_forms.UserCreationForm):
+    """User registration (signup) form."""
 
     first_name = forms.CharField(max_length=30)
     email = forms.EmailField()
