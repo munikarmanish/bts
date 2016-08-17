@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block head_title %}{{ user.get_full_name }}{% endblock head_title %}
+
+{% block main %}
+<main>
+
+{# Header #}
+<header class="vpad-sm">
+<div class="container">
+<div class="row">
+
+  {# User image #}
+  <div class="col-sm-2 hidden-xs">
+    <img src="{% static 'img/user.png' %}" class="img-responsive"/>
+  </div>{# col image #}
+
+  {# Name and details #}
+  <div class="col-sm-10">
+    <h1>{{ user.get_full_name }}</h1>
+    <hr class="hidden-xs">
+    <p>{{ user.email }}</p>
+  </div>{# col name #}
+
+</div>{# row #}
+</div>{# container #}
+</header>
+
+{# Action #}
+{% if user == request.user %}
+<section class="vpad-sm grey-bg">
+<div class="container">
+  <a href="{% url 'bugs_add' %}" class="btn btn-default">Submit New Bug Report</a>
+</div>{# container #}
+</section>
+{% endif %}
+
+{# Associated reports #}
+<section class="vpad-sm">
+<div class="container">
+
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#submitted">Submitted Reports</a></li>
+    {% if user.is_staff %}
+    <li><a data-toggle="tab" href="#assigned">Assigned Reports</a></li>
+    {% endif %}
+  </ul>
+
+  <div class="tab-content">
+
+    {# Submitted reports #}
+    <div class="tab-pane fade in active" id="submitted">
+    {% if user.submitted_reports.all %}
+      <ul>
+        {% for bug in user.submitted_reports.all %}
+          <li><a href="{{ bug.get_absolute_url }}">{{ bug }}</a></li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No bug reports submitted yet.</p>
+    {% endif %}
+    </div>
+
+    {# Assigned reports #}
+    {% if user.is_staff %}
+    <div class="tab-pane fade" id="assigned">
+    {% if user.assigned_reports.all %}
+      <ul>
+      {% for bug in user.assigned_reports.all %}
+        <li><a href="{{ bug.get_absolute_url }}">{{ bug }}</a></li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p>No reports assigned yet.</p>
+    {% endif %}
+    </div>
+    {% endif %}
+  </div>{# tab-content #}
+
+</div>{# container #}
+</section>
+
+</main>
+{% endblock main %}
