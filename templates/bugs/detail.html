@@ -73,17 +73,19 @@
         </div>{# panel-heading #}
         <div class="panel-body">
           {% if bug.actual %}
-            <h4>Actual behavior:</h4>
+            <h4><strong>Actual behavior:</strong></h4>
             <p>{{ bug.actual|linebreaks }}</p>
           {% endif %}
 
           {% if bug.expected %}
-            <h4>Expected behavior:</h4>
+            <hr>
+            <h4><strong>Expected behavior:</strong></h4>
             <p>{{ bug.expected|linebreaks }}</p>
           {% endif %}
 
           {% if bug.reproduce %}
-            <h4>Steps to reproduce:</h4>
+            <hr>
+            <h4><strong>Steps to reproduce:</strong></h4>
             <p>{{ bug.reproduce|linebreaks }}</p>
           {% endif %}
         </div>{# panel-body #}
