@@ -1,4 +1,4 @@
-Approximate Topic Matching in Bug Tracking System
+Duplicate Bug Tracker
 =================================================
 
 It is a bug tracking system that can identify possible duplicate reports to
